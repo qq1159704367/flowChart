@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta charset="utf-8">
+    <title>ChartCoder</title>
+</head>
+
+<body
+    style="transition: 1s;background-color:#051524;display: flex;flex-direction: column;align-content: center;align-items: center;justify-content: center;overflow: hidden;">
+    <img id="moon" src="moon.png" style="position: absolute;z-index: -1;transform-origin: 50% 120vh;transform: rotateZ(30deg);
+    top:-20vh;transition:1s" width="400px" />
+    <img id="sun" src="sun.png"
+        style="position: absolute;z-index: -1;transform-origin: 50% 120vh;transform: rotateZ(-120deg);top:-20vh;transition: 1s;"
+        width="400px" />
+    <div id="title"
+        style="transition: 1s;width:100%;color: #4aaeff;font-size:80px;text-align: center;font-weight: 700;letter-spacing: 15px;text-shadow: 10px 5px 15px #00000070">
+        ChartCoder<font size="2px" style="letter-spacing: 0px">beta v1.02</font>
+    </div>
+    <div id="t1" style="transition: 1s;color: aliceblue;letter-spacing: 5px;">代码绘制流程图</div>
+    <hr style="width:90%;height:1px;background: #606060;border-style: none" />
+    <button id="btn1" class="btn" onClick="Load(false)">新建图表</button>
+    <button id="btn2" class="btn" style="margin-top: 0;background: #606060" onClick="Load(true)">加载样例</button>
+    <button id="btn3" class="btn" style="margin-top: 0;background: #606060"
+        onClick="window.location.href='old.html'">打开旧版</button>
+    <div style="position: absolute;bottom: 5px;color: #197477">网页版本更新频繁，请清除浏览器缓存以更新网页，为保正常使用，请使用谷歌浏览器</div>
+    <input id="theme" type="checkbox" style="position: fixed;top: 20px;right: 20px;" class="switch"
+        onchange="Theme(event)">
+
+</body>
+<script>
+    function Load(val) {
+        let t = document.getElementById('theme').checked;
+        if (!val) {
+            document.location.href = 'flowChart' + (t ? '_l' : '') + '.html';
+        } else {
+            document.location.href = 'flowChart' + (t ? '_l' : '') + '.html?true';
+        }
+    }
+    function Theme(e) {
+        let t = document.getElementById('theme').checked;
+        if (t) {
+            document.body.style.background = '#c4f7fd'
+            document.getElementById('moon').style.transform = 'rotateZ(120deg)'
+            document.getElementById('sun').style.transform = 'rotateZ(-30deg)'
+            document.getElementById('btn1').style.background = '#0088ff'
+            document.getElementById('btn2').style.background = '#909090'
+            document.getElementById('btn3').style.background = '#909090'
+            document.getElementById('btn1').style.color = '#ffffff'
+            document.getElementById('btn2').style.color = '#ffffff'
+            document.getElementById('btn3').style.color = '#ffffff'
+            document.getElementById('title').style.color = '#0088ff'
+            document.getElementById('t1').style.color = '#000000'
+        } else {
+            document.body.style.background = '#051524'
+            document.getElementById('moon').style.transform = 'rotateZ(30deg)'
+            document.getElementById('sun').style.transform = 'rotateZ(-120deg)'
+            document.getElementById('btn1').style.background = '#5580ff'
+            document.getElementById('btn2').style.background = '#606060'
+            document.getElementById('btn3').style.background = '#606060'
+            document.getElementById('btn1').style.color = '#202020'
+            document.getElementById('btn2').style.color = '#202020'
+            document.getElementById('btn3').style.color = '#202020'
+            document.getElementById('title').style.color = '#4aaeff'
+            document.getElementById('t1').style.color = 'aliceblue'
+        }
+    }
+</script>
+<style>
+    .btn {
+        box-sizing: border-box;
+        background-color: #55B0FF;
+        color: #202020;
+        border-radius: 20px;
+        padding: 5px 30px;
+        margin: 40px;
+        font-size: 20px;
+        font-family: 微软雅黑;
+        font-weight: bold;
+        border-style: none;
+        width: 300px;
+        height: 50px;
+        box-shadow: 5px 5px 10px #000000A0;
+        transition-duration: 500ms;
+    }
+
+    .btn:hover {
+        box-shadow: 5px 5px 50px #000000;
+    }
+
+    .btn:active {
+        width: 320px;
+    }
+
+    html {
+        height: 100%;
+    }
+
+    body {
+        height: 100%;
+        margin: 0
+    }
+
+    .switch {
+        width: 40px;
+        height: 22px;
+        border-radius: 11px;
+        background-color: dimgray;
+        appearance: none;
+        border: #101010 solid 2px;
+        transition-duration: 300ms;
+    }
+
+    .switch:hover {
+        border-color: #909090;
+    }
+
+    .switch::after {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background-color: lightgray;
+        content: '';
+        position: absolute;
+    }
+
+    .switch:checked {
+        border-color: rgb(0, 157, 255);
+        background-color: rgb(0, 157, 255);
+    }
+
+    .switch:checked::after {
+        background-color: #fff;
+        content: '';
+        right: 0;
+    }
+</style>
+
+</html>

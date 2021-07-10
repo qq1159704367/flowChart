@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="ChartCoder.png" />
+    <title>ChartCoder</title>
+</head>
+
+<body style="
+      background: #202020;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+    ">
+    <div id="input" style="position: absolute;width: 200px;box-sizing: border-box;padding: 10px 20px;
+        z-index: 0;display: flex;flex-direction: column;height: fit-content;justify-content: center;
+        left: 0;right: 0;margin: auto;top: 0;bottom: 0;transition: 300ms;background: #000000;
+        opacity: 0;">
+        <textarea onblur="ChangeName()" type="text" id="name" style="
+        border: none;box-sizing: border-box;padding: 0 10px;color: white;background: #454545;
+        line-height: 24px;text-align: center;resize: none;" rows="1" value=""></textarea>
+        <button class="btn" style="width: auto; margin: 10px 0 0 0; line-height: 24px; border: none"
+            onclick="ChangeName()">
+            确定
+        </button>
+    </div>
+    <div id="autoComplete" style="position: absolute;width: fit-content;height: fit-content;
+        left: 0;top: 0;transition-duration: 300ms;background: #000;box-sizing: border-box;
+        padding: 5px;line-height: 24px;color: white;display: none;flex-direction: column;
+        z-index: 5;opacity: 0.8;">
+
+    </div>
+    <h1 style="
+        color: white;
+        width: 100%;
+        text-align: center;
+        flex-shrink: 0;
+        font-size: 50px;
+        margin: 10px 0;
+      ">
+        FlowChart <font style="font-size: 14px; color: #a0a0a0">beta</font>
+    </h1>
+    <hr style="background-color: gray; flex-shrink: 0; width: 100%" />
+    <div style="
+        display: flex;
+        flex-direction: row;
+        height: 24px;
+        width: 100%;
+        flex-shrink: 0;
+        overflow: hidden;
+      ">
+        <button class="btn" onClick="New()" tabindex="1">新建</button>
+        <button class="btn" onClick="OpenClick()" tabindex="1">打开</button>
+        <input type="file" id="OpenFile" onChange="Open()" style="display: none" accept=".cc,.txt" />
+        <a class="btn" id="Save"><button class="btn" onMouseOver="SaveFile()" style="height: 100%">
+                保存
+            </button></a>
+        <a class="btn" id="Ex"><button class="btn" onMouseOver="Export()" style="height: 100%">
+                导出
+            </button></a>
+        <select id="file-type" class="sel" style="margin-left: -10px; width: 70px; margin-right: 10px">
+            <option value="1">SVG</option>
+            <option value="2" selected>PNG</option>
+            <option value="3">JPG</option>
+        </select>
+        <button class="btn" onClick="ChangeNameMenu()">重命名</button>
+        <button class="btn" onClick="document.location = 'help.html'" style="color:khaki">
+            帮助
+        </button>
+        <!--
+        <button class="btn" onClick="CodeChange()">代码风格转换</button>
+        <select id="type" class="sel" style="margin-left:-10px">
+            <option value="c">c语言</option>
+            <option value="p">python</option>
+        </select>
+        -->
+        <div style="
+          margin-left: 10px;
+          color: #e0e0e0;
+          font-size: 14px;
+          line-height: 24px;
+          font-weight: bold;
+          font-family: 微软雅黑;
+        ">
+            边线宽度
+        </div>
+        <select id="stroke-width" class="sel" style="margin-left: 5px; width: 50px" onchange="swChange()">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+        </select>
+        <div style="
+          margin-left: 10px;
+          color: #e0e0e0;
+          font-size: 14px;
+          line-height: 24px;
+          font-weight: bold;
+          font-family: 微软雅黑;
+        ">
+            字体大小
+        </div>
+        <select id="font-size" class="sel" style="margin-left: 5px; width: 50px" onchange="tsChange()">
+            <option value="10">特小</option>
+            <option value="14">小</option>
+            <option value="18">中</option>
+            <option value="20" selected>大</option>
+            <option value="24">特大</option>
+        </select>
+        <div style="
+          margin-left: 10px;
+          color: #e0e0e0;
+          font-size: 14px;
+          line-height: 24px;
+          font-weight: bold;
+          font-family: 微软雅黑;
+        ">
+            整体布局
+        </div>
+        <select id="len" class="sel" style="margin-left: 5px; width: 70px" onchange="lenChange()">
+            <option value="1">紧凑</option>
+            <option value="2" selected>适中</option>
+            <option value="3">宽松</option>
+        </select>
+    </div>
+    <div style="display: flex;flex-direction: row;height: 24px;width: 100%;
+        padding: 5px 0;flex-shrink: 0;overflow: hidden;">
+        <div style="margin-left: 10px;color: #e0e0e0;font-size: 14px;line-height: 24px;font-weight: bold;
+          font-family: 微软雅黑;">
+            文本换行长度
+        </div>
+        <textarea id="maxL" rows="1" maxlength="3" onblur="MaxLengthChange()" class="in">25</textarea>
+        <div style="margin-left: 20px;color: #e0e0e0;font-size: 14px;line-height: 24px;font-weight: bold;
+            font-family: 微软雅黑;">
+            缩放
+        </div>
+        <input class="in" id="scale" onblur="ScaleChange()" value="100" />
+    </div>
+    <div style="
+        display: flex;
+        flex-direction: row;
+        flex-grow: 1;
+        overflow: scroll;
+        overflow-x: hidden;
+        overflow-y: hidden;
+      ">
+        <div style="display: flex; flex-direction: column; flex-grow: 0; z-index: 1;flex-shrink: 0;width: 50%;">
+            <div style="background: #303030; flex-grow: 0; height: 24px; width: 100%"></div>
+            <div class="coderb" style="
+            display: flex;
+            flex-direction: row;
+            flex-grow: 1;
+            overflow: scroll;
+            overflow-x: hidden;
+            overflow-y: hidden;
+            background-color: #404040;
+          ">
+                <div style="width: 30px;flex-shrink: 0;background: #252525;color: #a0a0a0;padding-top: 10px;">
+                    <div id="LineBlock"
+                        style="width: 100%;height: 100%;top: 0;position: relative;transition-duration: 300ms;"></div>
+                </div>
+                <!--textarea tabindex="2" id="coder" class="textarea" style="min-width:500px;width:100%;font-family: Consolas;font-size:12px;border-style:none;
+                    color:white;padding:0;resize: none;box-sizing: border-box;padding:5px;letter-spacing: 1px;white-space: nowrap;flex-grow: 1;line-height: 18px;
+                    tab-size: 4" rows="10" placeholder="请在此处键入代码" onKeyUp="CountRefresh(event)" onKeyDown="KeyDown(event)" 
+                    onscroll="ScrollEvent(event)" ></textarea-->
+                <input tabindex="2" id="in" type="text" style="padding: 0;margin: 0;outline: none;border: none;
+                    height: 0;width: 0;" autofocus oninput="input(event)" onkeydown="KeyDown(event)" onblur="Blur()"
+                    autocomplete="off" />
+                <div style="width: 100%;border-style: none;box-sizing: border-box;flex-grow: 1;position: relative;height: 100%;
+                    overflow: auto;" id="coder" onresize="Resize()" onscroll="ScrollEvent(event)">
+
+                    <div id="back" class="back" style="width: 100%;min-width: fit-content;min-height: fit-content;overflow:hidden;padding: 10px 5px;
+                        position: relative;box-sizing: border-box;transition-duration: 300ms;
+                        " fontSize="14px" onmouseup="BackMouseUp()">
+                        <div id="anchor" class="anchor" style="position: absolute; top: 10px; left: 15px; z-index: 10">
+                        </div>
+                    </div>
+                    <script src="editor.js"></script>
+
+                    <style>
+                        .select {
+                            background: #c0bb9380;
+                            position: relative;
+                        }
+
+                        .back {
+                            background-color: transparent;
+                        }
+
+                        .e_line {
+                            background-color: #383838;
+                            min-width: min-content;
+                            width: 100%;
+                            color: #e0e0e0;
+                            font-family: consolas;
+                            white-space: pre;
+                            transition-duration: 300ms;
+                            padding: 0 10px;
+                            box-sizing: border-box;
+                            position: relative;
+                            z-index: 1;
+                        }
+
+                        .e_line:hover {
+                            background-color: #36444d;
+                            z-index: 2;
+                        }
+
+                        .e_line:active {
+                            transition: box-shadow 300ms ease-in 500ms,
+                                border-radius 300ms ease-in 500ms;
+                            border-radius: 5px;
+                            background-color: #505050;
+                            box-shadow: 0 0 0 2px goldenrod;
+                            z-index: 3;
+                        }
+
+                        .test {
+                            color: #e0e0e0;
+                            font-family: consolas;
+                            white-space: pre;
+                        }
+
+                        .anchor {
+                            background-color: #d0d0d0;
+                            width: 2px;
+                            animation: blink 1s linear infinite;
+                        }
+
+                        @keyframes blink {
+                            0% {
+                                opacity: 1;
+                            }
+
+                            50% {
+                                opacity: 0;
+                            }
+
+                            100% {
+                                opacity: 1;
+                            }
+                        }
+
+                        body {
+                            margin: 0;
+                        }
+                    </style>
+                </div>
+            </div>
+            <div id="error" style="background: #303030;flex-grow: 0;height: 24px;width: 100%;color: #ff4040;
+            padding: 0 10px 0 30px;font-size: 12px;font-family: 微软雅黑;line-height: 24px;box-sizing: border-box;"></div>
+        </div>
+        <div id="chart" style="flex-grow: 1;box-sizing: border-box;padding: 5px;background: #ffffff;
+          overflow: scroll;overflow-x: auto;overflow-y: auto;transition-duration: 300ms;
+            ">
+            <div style="display: inline-block; position: relative">
+                <svg id="SvgChart" style="transition-duration: 300ms" dominant-baseline="middle"
+                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.2"
+                    baseProfile="tiny" fill="transparent"></svg>
+                <div id="DivChart" style="display: inline-block;position: absolute;background: none;
+                z-index: 1;top: 0;left: 0;transform-origin: 0% 0%;"></div>
+                <div id="menu" style="
+                justify-content: center;transition-duration: 300ms;position: absolute;width: 140px;
+                background-color: #e0e0e0;opacity: 0;z-index: 0;display: flex;
+                flex-direction: column;padding: 5px;box-sizing: border-box;top: 0;left: 0;
+                ">
+                    <button class="menu" onclick="ChangeSide()">交换方向</button>
+                    <button class="menu" onclick="ChangeJump()">更改跳转方向</button>
+                    <button class="menu" onmousewheel="ChangeCondPadding(event)">调整条件下节点</button>
+                    <button class="menu" onmousewheel="ChangeNextPadding(event)">调整下节点</button>
+                    <button class="menu" onmousewheel="ChangeSidePadding(event)">调整侧节点</button>
+                    <button class="menu" onmousewheel="ChangeDownPadding(event)">调整出口方向</button>
+                    <button class="menu" onmousewheel="ChangeJumpSide(event)">调整跳跃侧方向</button>
+                    <button class="menu" onclick="DisMenu()">关闭菜单</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="code.js"></script>
+<script type="text/javascript">
+    let fileName = "chart";
+    document.title = "ChartCoder " + fileName;
+    let count = 5;
+    let timer = setInterval("TimeCount()", 100);
+    let DivNodes = [];
+    let Head = undefined;
+    let Nnode;
+    let scaler = 1;
+    let errLine;
+    let suc;
+
+    let coder = initEdit(
+        document.getElementById("back"),
+        document.getElementById("in"),
+        document.getElementById("anchor"),
+        document.getElementById('coder')
+    );
+    coder.SetOnLineCountChange(RefreshLineCount);
+    coder.SetSingleKeyDown(SingleKeyDown);
+    coder.SetOnChange(() => {
+        count = 5;
+    });
+    coder.SetDrawFunction(HighLight);
+    coder.SetAfterKey(AutoC);
+    coder.SetOnReAnchor(DisAuto);
+
+    if (document.location.href.indexOf("true") != -1) {
+        coder.SetContent(`in a
+Judge: if(a < b){
+    b++;nextPadding:80
+    goto Judge
+}else{
+    do{
+        c = a + b
+        divide(c)
+    }
+    divide(c)
+}
+
+function divide[
+    in n
+    n = n / 2
+    out n
+]`);
+    }
+    RefreshLineCount();
+
+    function HighLight(text) {
+        let p = 0;
+        text = text.replace(/</g, "&lt;");
+        text = text.replace(/>/g, "&gt;");
+        let k = '<font class="keyword"></font>';
+        let s = '<font class="symble"></font>';
+        let st = '<font class="style"></font>';
+        let single = true;
+        let style = false;
+        while (p < text.length) {
+            if (style) {
+                switch (text[p]) {
+                    case "<":
+                        p = text.indexOf("</font>", p) + 7;
+                        break;
+                    case "&":
+                        p += 4;
+                        break;
+                    case ":":
+                    case ",":
+                        text = text.insert(p + 1, "</font>");
+                        text = text.insert(p, '<font class="symble">');
+                        p += 1 + s.length;
+                        break;
+                    case "c":
+                        if (text.substr(p, 11) == "condPadding") {
+                            text = text.insert(p + 11, "</font>");
+                            text = text.insert(p, '<font class="style">');
+                            p += 11 + st.length;
+                        } else if (text.substr(p, 10) == "changeSide") {
+                            text = text.insert(p + 10, "</font>");
+                            text = text.insert(p, '<font class="style">');
+                            p += 10 + st.length;
+                        } else p++;
+                        break;
+                    case "d":
+                        if (text.substr(p, 11) == "downPadding") {
+                            text = text.insert(p + 11, "</font>");
+                            text = text.insert(p, '<font class="style">');
+                            p += 11 + st.length;
+                        } else p++;
+                        break;
+                    case "n":
+                        if (text.substr(p, 11) == "nextPadding") {
+                            text = text.insert(p + 11, "</font>");
+                            text = text.insert(p, '<font class="style">');
+                            p += 11 + st.length;
+                        } else p++;
+                        break;
+                    case "j":
+                        if (text.substr(p, 11) == "jumpPadding") {
+                            text = text.insert(p + 11, "</font>");
+                            text = text.insert(p, '<font class="style">');
+                            p += 11 + st.length;
+                        } else if (text.substr(p, 8) == "jumpSide") {
+                            text = text.insert(p + 8, "</font>");
+                            text = text.insert(p, '<font class="style">');
+                            p += 8 + st.length;
+                        } else p++;
+                        break;
+                    case "s":
+                        if (text.substr(p, 11) == "sidePadding") {
+                            text = text.insert(p + 11, "</font>");
+                            text = text.insert(p, '<font class="style">');
+                            p += 11 + st.length;
+                        } else if (text.substr(p, 8) == "sideType") {
+                            text = text.insert(p + 8, "</font>");
+                            text = text.insert(p, '<font class="style">');
+                            p += 8 + st.length;
+                        } else p++;
+                        break;
+                    case "t":
+                        if (text.substr(p, 8) == "trueText") {
+                            text = text.insert(p + 8, "</font>");
+                            text = text.insert(p, '<font class="style">');
+                            p += 8 + st.length;
+                        } else p++;
+                        break;
+                    case "f":
+                        if (text.substr(p, 9) == "falseText") {
+                            text = text.insert(p + 9, "</font>");
+                            text = text.insert(p, '<font class="style">');
+                            p += 9 + st.length;
+                        } else p++;
+                        break;
+                    case "h":
+                        if (text.substr(p, 9) == "hideFalse") {
+                            text = text.insert(p + 9, "</font>");
+                            text = text.insert(p, '<font class="style">');
+                            p += 9 + st.length;
+                        } else p++;
+                        break;
+                    case "b":
+                        if (text.substr(p, 11) == "backPadding") {
+                            text = text.insert(p + 11, "</font>");
+                            text = text.insert(p, '<font class="style">');
+                            p += 11 + st.length;
+                        } else p++;
+                        break;
+                    default:
+                        single = false;
+                        p++;
+                        break;
+                }
+            } else {
+                switch (text[p]) {
+                    case "<":
+                        p = text.indexOf("</font>", p) + 7;
+                        break;
+                    case "&":
+                        p += 4;
+                        break;
+                    case ";":
+                        text = text.insert(p + 1, "</font>");
+                        text = text.insert(p, '<font class="symble">');
+                        p += 1 + s.length;
+                        style = true;
+                        single = true;
+                        break;
+                    case "\\":
+                        p++;
+                        break;
+                    case "{":
+                    case "}":
+                    case "(":
+                    case ")":
+                    case "[":
+                    case "]":
+                    case ":":
+                        text = text.insert(p + 1, "</font>");
+                        text = text.insert(p, '<font class="symble">');
+                        p += 1 + s.length;
+                        single = true;
+                        break;
+                    case "i":
+                        if (
+                            single &&
+                            (text.substr(p, 2) == "if" || text.substr(p, 2) == "in")
+                        ) {
+                            text = text.insert(p + 2, "</font>");
+                            text = text.insert(p, '<font class="keyword">');
+                            p += 2 + k.length;
+                        } else p++;
+                        single = false;
+                        break;
+                    case "e":
+                        if (single && text.substr(p, 6) == "elseif") {
+                            text = text.insert(p + 6, "</font>");
+                            text = text.insert(p, '<font class="keyword">');
+                            p += 6 + k.length;
+                        } else if (text.substr(p, 4) == "else") {
+                            text = text.insert(p + 4, "</font>");
+                            text = text.insert(p, '<font class="keyword">');
+                            p += 4 + k.length;
+                        } else p++;
+                        single = false;
+                        break;
+                    case "w":
+                        if (single && text.substr(p, 5) == "while") {
+                            text = text.insert(p + 5, "</font>");
+                            text = text.insert(p, '<font class="keyword">');
+                            p += 5 + k.length;
+                        } else p++;
+                        single = false;
+                        break;
+                    case "g":
+                        if (single && text.substr(p, 4) == "goto") {
+                            text = text.insert(p + 4, "</font>");
+                            text = text.insert(p, '<font class="keyword">');
+                            p += 4 + k.length;
+                        } else p++;
+                        single = false;
+                        break;
+                    case "d":
+                        if (single && text.substr(p, 2) == "do") {
+                            text = text.insert(p + 2, "</font>");
+                            text = text.insert(p, '<font class="keyword">');
+                            p += 2 + k.length;
+                        } else p++;
+                        single = false;
+                        break;
+                    case "o":
+                        if (single && text.substr(p, 3) == "out") {
+                            text = text.insert(p + 3, "</font>");
+                            text = text.insert(p, '<font class="keyword">');
+                            p += 3 + k.length;
+                        } else p++;
+                        single = false;
+                        break;
+                    case "f":
+                        if (single && text.substr(p, 8) == "function") {
+                            text = text.insert(p + 8, "</font>");
+                            text = text.insert(p, '<font class="keyword">');
+                            p += 8 + k.length;
+                        } else p++;
+                        single = false;
+                        break;
+                    case "t":
+                        if (single && text.substr(p, 4) == "turn") {
+                            text = text.insert(p + 4, "</font>");
+                            text = text.insert(p, '<font class="keyword">');
+                            p += 4 + k.length;
+                        } else p++;
+                        single = false;
+                        break;
+                    case " ":
+                    case "\t":
+                        single = true;
+                        p++;
+                        break;
+                    default:
+                        single = false;
+                        p++;
+                        break;
+                }
+            }
+        }
+
+        return text;
+    }
+
+    function swChange() {
+        build();
+    }
+
+    function tsChange() {
+        build();
+    }
+
+    function lenChange() {
+        let t = document.getElementById("len").value;
+        if (t == "1") lstatic.ten = 10;
+        if (t == "2") lstatic.ten = 20;
+        if (t == "3") lstatic.ten = 40;
+        statistic.PaddingH = 2 * lstatic.ten;
+        statistic.PaddingW = 2 * lstatic.ten;
+        build();
+    }
+
+    function New() {
+        coder.SetContent("");
+    }
+
+    function MaxLengthChange() {
+        document.getElementById("error").innerHTML = "";
+        let l = document.getElementById("maxL").value;
+        if (/[^0-9]/.test(l)) {
+            document.getElementById("error").innerHTML =
+                "设置的值有错误，请输入数字";
+        } else {
+            statistic.MaxLength = Number(l);
+            build();
+        }
+    }
+
+    function ChangeNameMenu() {
+        document.getElementById("input").style.zIndex = "10";
+        document.getElementById("input").style.opacity = "0.9";
+        document.getElementById("name").focus();
+        document.getElementById("name").value = fileName;
+    }
+
+    function ChangeName() {
+        document.getElementById("input").style.zIndex = "0";
+        document.getElementById("input").style.opacity = "0";
+        if (document.getElementById("name").value == "") return;
+        fileName = document.getElementById("name").value;
+        document.title = "ChartCoder " + fileName;
+    }
+
+    /*
+    function CodeChange() {
+        let code = coder.GetContent();
+        try {
+            coder.setContent(BuildCode(document.getElementById('type').value, code));
+            build();
+        } catch (e) {
+            document.getElementById('error').innerHTML = '转换错误'
+        }
+    }*/
+
+    function GetFocus() {
+        coder.focus();
+    }
+
+    function DisMenu() {
+        document.getElementById("menu").style.opacity = "0";
+        document.getElementById("menu").style.zIndex = 0;
+    }
+
+    function SingleKeyDown(e) {
+        if (suc)
+            coder.SetLineError(e.y)
+        console.log(e)
+        if (e.mode == "add") {
+            if (!/[^0-9]/.test(e.data)) {
+                let n = Number(e.data);
+                if (autos.length != 0 && n <= autos.length) {
+                    let anc = coder.RemoveText(e.y, e.x - autos[n - 1].pos - 1, autos[n - 1].pos + 1);
+                    e.x = anc.x;
+                    e.y = anc.y
+                    anc = coder.InsertText({ x: e.x, y: e.y }, autos[n - 1].target, true);
+                    e.x = anc.x;
+                    e.y = anc.y
+                    document.getElementById('autoComplete').style.display = 'none'
+                    autos = [];
+                    return false;
+                }
+            }
+
+            if (e.data == "(") {
+                coder.InsertText({ x: e.x, y: e.y }, "()");
+                coder.MoveAnchor(e.y, 1);
+                return false;
+            } else if (e.data == ")") {
+                if (coder.GetChar(e.y, e.x) == ")") {
+                    coder.MoveAnchor(e.y, 1);
+                    return false;
+                }
+            } else if (e.data == "{") {
+                coder.InsertText({ x: e.x, y: e.y }, "{}");
+                coder.MoveAnchor(e.y, 1);
+                return false;
+            } else if (e.data == "}") {
+                if (coder.GetChar(e.y, e.x) == "}") {
+                    coder.MoveAnchor(e.y, 1);
+                    return false;
+                }
+            } else if (e.data == "[") {
+                coder.InsertText({ x: e.x, y: e.y }, "[]");
+                coder.MoveAnchor(e.y, 1);
+                return false;
+            } else if (e.data == "]") {
+                if (coder.GetChar(e.y, e.x) == "]") {
+                    coder.MoveAnchor(e.y, 1);
+                    return false;
+                }
+            } else if (e.data == "Tab") {
+                coder.InsertText({ x: e.x, y: e.y }, "    ");
+                coder.MoveAnchor(e.y, 4);
+                setTimeout("GetFocus()", 100);
+                //dom.focus();
+            } else if (e.data == "Enter") {
+                let code = coder.GetContent();
+                let n = 0,
+                    c = 0;
+                let pos = AnchorToPos(e.y, e.x - 1);
+                while (n <= pos) {
+                    if (code[n] == "{" || code[n] == "[") c++;
+                    else if (code[n] == "}" || code[n] == "]") c--;
+                    n++;
+                }
+                if (code[pos + 1] == "}" || code[pos + 1] == "]")
+                    coder.InsertText(
+                        { x: e.x, y: e.y },
+                        "\n" +
+                        CreateString("    ", c) +
+                        "\n" +
+                        CreateString("    ", c - 1)
+                    );
+                else
+                    coder.InsertText(
+                        { x: e.x, y: e.y },
+                        "\n" + CreateString("    ", c)
+                    );
+                coder.MoveAnchor(e.y + 1, c * 4);
+                return false;
+            }
+        } else {
+            document.getElementById('autoComplete').style.display = 'none'
+            if (e.mode == "sub") {
+                if (e.data == "(" && coder.GetChar(e.y, e.x) == ")") {
+                    coder.RemoveText(e.y, e.x, 1);
+                } else if (e.data == "{" && coder.GetChar(e.y, e.x) == "}") {
+                    coder.RemoveText(e.y, e.x, 1);
+                }
+            }
+        }
+        return true;
+    }
+
+    function DisAuto(e) {
+        autos = []
+        document.getElementById('autoComplete').style.display = 'none'
+        return true;
+    }
+
+    let Key = ['if', 'else', 'elseif', 'while', 'in', 'out', 'goto', 'end', 'nextPadding',
+        'sidePadding', 'condPadding', 'downPadding', 'changeSide', 'jumpSide', 'trueText',
+        'falseText', 'sideType', 'backPadding', 'turn','hideFalse']
+    let charCode = {
+        alpha: 'α', beta: 'β', epsilon: 'ε', sum: 'Σ', prod: '∏', gamma: 'γ', rho: 'ρ', tau: 'τ', delta: 'Δ',
+        theta: 'θ', lambda: 'λ', mu: 'μ', pi: 'π', omega: 'ω', xi: 'ξ', eta: 'η'
+    }
+    let autos = [];
+
+    function AutoC(e) {
+        let container = document.getElementById('autoComplete');
+        autos = []
+        let linet = coder.GetLineText(e.y)
+        Key.forEach(i => {
+            let t = i.length + 1;
+            while (t != 0 && (t = i.lastIndexOf(e.data, t - 1)) != -1) {
+                let left = i.slice(0, t + 1), right = linet.slice(e.x - t - 1, e.x);
+                if (left == right && (!linet[e.x - t - 2] || !LetterTest.test(linet[e.x - t - 2]))) {
+                    autos.push({
+                        key: i,
+                        pos: t,
+                        target: i
+                    })
+                    break;
+                }
+            }
+        })
+        Object.keys(charCode).forEach(i => {
+            let t = i.length + 1;
+            while (t != 0 && (t = i.lastIndexOf(e.data, t - 1)) != -1) {
+                let left = i.slice(0, t + 1), right = linet.slice(e.x - t - 1, e.x);
+                if (left == right && (!linet[e.x - t - 2] || !LetterTest.test(linet[e.x - t - 2]))) {
+                    autos.push({
+                        key: i,
+                        pos: t,
+                        target: charCode[i]
+                    })
+                    break;
+                }
+            }
+        })
+        console.log(autos)
+        container.innerHTML = ''
+        if (autos.length != 0) {
+            autos.forEach((i, idx) => {
+                let k = document.createElement('div');
+                k.innerHTML = (idx + 1) + '\t' + i.target;
+                k.className = 'canChoose'
+                container.appendChild(k)
+            })
+            let x = ancNode.offsetLeft, sx = ancNode.parentNode.parentNode.scrollLeft, ox = ancNode.parentNode.parentNode.parentNode.offsetLeft;
+            let y = ancNode.offsetTop, sy = ancNode.parentNode.parentNode.scrollTop, oy = ancNode.parentNode.parentNode.parentNode.offsetTop;
+            container.style.left = (x - sx + ox + 30) + 'px';
+            container.style.top = (y - sy + oy + ancNode.offsetHeight) + 'px';
+            container.style.display = 'flex';
+        } else
+            container.style.display = 'none'
+        return true;
+    }
+
+    function RefreshLineCount() {
+        var block = document.getElementById("LineBlock");
+        var code = coder.GetContent();
+        let l = code.split("\n").length;
+        l = l == 0 ? 1 : l;
+        let n = block.children.length;
+        while (l > n) {
+            n++;
+            let dom = document.createElement("div");
+            dom.className = "line";
+            dom.id = "line_" + n;
+            dom.innerHTML = n;
+            block.appendChild(dom);
+        }
+        while (l < n) {
+            block.removeChild(document.getElementById("line_" + n));
+            n--;
+        }
+    }
+
+    function ScrollEvent(e) {
+        console.log(e);
+        document.getElementById("LineBlock").style.top =
+            -e.target.scrollTop + "px";
+    }
+
+    function TimeCount() {
+        if (count != -1) count--;
+        if (count == 0) build();
+    }
+
+    function OpenClick() {
+        document.getElementById("OpenFile").click();
+    }
+
+    function Open() {
+        var selectedFile = document.getElementById("OpenFile").files[0];
+        fileName = selectedFile.name.split(".")[0];
+        document.title = "ChartCoder " + fileName;
+        var reader = new FileReader(); //这里是核心！！！读取操作就是由它完成的。
+        reader.readAsText(selectedFile); //读取文件的内容
+        reader.onload = function () {
+            coder.SetContent(this.result);
+            count = 5;
+        };
+        document.getElementById('OpenFile').value = null
+    }
+
+    function ScaleChange() {
+        scaler = (Number(document.getElementById('scale').value) / 100) || 1;
+        let svgchart = document.getElementById('SvgChart')
+        let orw = svgchart.getAttribute('OriW');
+        let orh = svgchart.getAttribute('OriH');
+        svgchart.setAttribute('width', orw * scaler);
+        svgchart.setAttribute('height', orh * scaler);
+
+        document.getElementById('DivChart').style.transform = 'scale(' + scaler + ')'
+    }
+
+    function SaveFile() {
+        var content = coder.GetContent();
+        var blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+        let dom = document.getElementById("Save");
+        dom.href = window.URL.createObjectURL(blob);
+        dom.setAttribute("download", fileName + ".cc");
+    }
+
+    function Export() {
+        let type = document.getElementById("file-type").value;
+        let svg = document.getElementById("SvgChart");
+        let oriSize = new Size(Number(svg.getAttribute('OriW')), Number(svg.getAttribute('OriH')));
+        if (type == "3") svg.style.background = "#ffffff";
+        if (type != "1") {
+            svg.setAttribute(
+                "viewBox",
+                ["0", "0", oriSize.width, oriSize.height].join(",")
+            );
+            svg.setAttribute("width", oriSize.width * 4);
+            svg.setAttribute("height", oriSize.height * 4);
+        }
+        var content =
+            '<?xml version="1.0" encoding="UTF-8" standalone="no"?>' +
+            document.getElementById("SvgChart").outerHTML;
+        var blob = new Blob([content], { type: "image/svg+xml;charset=utf-8" });
+
+        svg.removeAttribute("viewBox");
+        svg.setAttribute("width", oriSize.width);
+        svg.setAttribute("height", oriSize.height);
+
+        let dom = document.getElementById("Ex");
+        if (type == "1") {
+            dom.href = URL.createObjectURL(blob);
+            dom.setAttribute("download", fileName + ".svg");
+        } else {
+            dom.href = "";
+            let canvas = document.createElement("canvas");
+            let img = new Image();
+            img.crossOrigin = "Anonymous";
+            img.src = URL.createObjectURL(blob);
+            //document.body.appendChild(img);
+            img.onload = function () {
+                let ctx = canvas.getContext("2d");
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+
+                if (type == "2") {
+                    dom.href = canvas.toDataURL();
+                    dom.setAttribute("download", fileName + ".png");
+                } else {
+                    dom.href = canvas.toDataURL("image/jpeg", 1);
+                    dom.setAttribute("download", fileName + ".jpg");
+                }
+            };
+        }
+
+        scaler = (Number(document.getElementById('scale').value) / 100) || 1;
+        let svgchart = document.getElementById('SvgChart')
+        let orw = svgchart.getAttribute('OriW');
+        let orh = svgchart.getAttribute('OriH');
+        svgchart.setAttribute('viewBox', [0, 0, orw, orh].join(','))
+        svgchart.setAttribute('width', orw * scaler);
+        svgchart.setAttribute('height', orh * scaler);
+    }
+
+    function DivDown(e) {
+        let menu = document.getElementById("menu");
+        let node;
+        let id = e.target.id;
+        DivNodes.some((i) => {
+            if ("id_" + i.id == id) {
+                node = i.Node;
+                return true;
+            }
+        });
+        menu.children[0].style.display = node instanceof ConditionNode ? "block" : "none";
+        menu.children[1].style.display = (node.Type == NodeType.jump || node.Iswhile) ? "block" : "none";
+        menu.children[2].style.display = node instanceof ConditionNode ? "block" : "none";
+        menu.children[3].style.display = node.Type != NodeType.jump ? "block" : "none";
+        menu.children[4].style.display = node instanceof ConditionNode ? "block" : "none";
+        menu.children[6].style.display = (node.Type == NodeType.jump || node.Iswhile) ? "block" : "none";
+        menu.style.top = (node.pos.y + node.OwnSize.height / 2) * scaler + "px";
+        menu.style.left = (node.pos.x + node.OwnSize.width / 2) * scaler + "px";
+        menu.style.opacity = "0.9";
+        menu.style.zIndex = 3;
+        Nnode = node;
+    }
+
+    function ChangeNextPadding(e) {
+        document.getElementById("error").innerHTML = "";
+        if (Nnode.NextNode == undefined || Nnode.end) {
+            document.getElementById("error").innerHTML = "没有下节点";
+            return;
+        }
+        if (e.deltaY > 0)
+            Nnode.nextPadding = (Nnode.nextPadding == undefined ? statistic.PaddingH : Nnode.nextPadding) + lstatic.ten / 2;
+        else
+            Nnode.nextPadding = (Nnode.nextPadding == undefined ? statistic.PaddingH : Nnode.nextPadding) - lstatic.ten / 2;
+        UpdateStyle(Nnode, "nextPadding");
+        build();
+    }
+    function ChangeCondPadding(e) {
+        document.getElementById("error").innerHTML = "";
+        if (e.deltaY > 0)
+            Nnode.condPadding = (Nnode.condPadding == undefined ? statistic.PaddingH : Nnode.condPadding) + lstatic.ten / 2;
+        else
+            Nnode.condPadding = (Nnode.condPadding == undefined ? statistic.PaddingH : Nnode.condPadding)  - lstatic.ten / 2;
+        UpdateStyle(Nnode, "condPadding");
+        build();
+    }
+    function ChangeSidePadding(e) {
+        document.getElementById("error").innerHTML = "";
+        if (e.deltaY > 0)
+            Nnode.sidePadding =  (Nnode.sidePadding == undefined ? statistic.PaddingW : Nnode.sidePadding)  + lstatic.ten / 2;
+        else
+            Nnode.sidePadding =  (Nnode.sidePadding == undefined ? statistic.PaddingW : Nnode.sidePadding) - lstatic.ten / 2;
+        UpdateStyle(Nnode, "sidePadding");
+        build();
+    }
+
+    function ChangeSide() {
+        DisMenu();
+        document.getElementById("error").innerHTML = "";
+        Nnode.changeSide = (Nnode.changeSide || false) ? false : true;
+        UpdateStyle(Nnode, "changeSide");
+        build();
+    }
+
+    function ChangeJump() {
+        DisMenu();
+        document.getElementById("error").innerHTML = "";
+        Nnode.jumpSide =
+            (Nnode.jumpSide || direction.left_) == direction.left_
+                ? direction.right_
+                : direction.left_;
+        UpdateStyle(Nnode, "jumpSide");
+        build();
+    }
+
+    function ChangeJumpSide(e) {
+        document.getElementById("error").innerHTML = "";
+        if (e.deltaY > 0)
+            Nnode.jumpPadding = (Nnode.jumpPadding || 0) + lstatic.ten / 2;
+        else
+            Nnode.jumpPadding = (Nnode.jumpPadding || 0) - lstatic.ten / 2;
+        UpdateStyle(Nnode, "jumpPadding");
+        build();
+    }
+
+    function ChangeDownPadding(e) {
+        document.getElementById("error").innerHTML = "";
+        if (e.deltaY > 0)
+            Nnode.downPadding =  (Nnode.downPadding == undefined ? lstatic.ten : Nnode.downPadding)  + lstatic.ten / 2;
+        else
+            Nnode.downPadding =  (Nnode.downPadding == undefined ? lstatic.ten : Nnode.downPadding)  - lstatic.ten / 2;
+        UpdateStyle(Nnode, "downPadding");
+        build();
+    }
+
+    function UpdateStyle(node, attribute) {
+        if (node.lineAt != undefined) {
+            let t = coder.GetAllLineText()[node.lineAt];
+            let style = {};
+            if (t.indexOf(";") != -1) {
+                let s = t.split(";")[1].split(",");
+                t = t.split(";")[0];
+                s.forEach((i) => {
+                    let info = i.split(":");
+                    info[1] = info[1]?.replace(/ /g, "");
+                    style[info[0]] = info[1];
+                });
+            }
+            if (attribute == "jumpSide")
+                style[attribute] =
+                    node[attribute] == direction.left_ ? "left" : "right";
+            else if (attribute == 'changeSide' || attribute == 'hideFalse')
+                style[attribute] = node[attribute] == true ? 'true' : 'false';
+            else {
+                if (node[attribute] != undefined && attribute != '')
+                    style[attribute] = node[attribute];
+            }
+            let k = [];
+            Object.keys(style).forEach((i) => {
+                k.push(i + ":" + style[i]);
+            });
+            coder.SetLineText(node.lineAt, t + ";" + k.join(","));
+        }
+    }
+
+    function build() {
+        console.log("build...");
+        suc = false;
+        RefreshLineCount();
+        if (errLine != undefined) {
+            coder.SetLineError(errLine, false);
+            try {
+                document.getElementById("line_" + (errLine + 1)).className = 'line';
+            } catch { }
+            errLine = undefined;
+        }
+        let Code = coder.GetAllLineText();
+        try {
+            document.getElementById("error").innerHTML = "";
+
+            document.getElementById("coder").className = 'coderb';
+            Head = DiliverPart(Code, "Coder1", false);
+            let sw = document.getElementById("stroke-width").value;
+            let ts = document.getElementById("font-size").value;
+            var Svg = Draw(Head, document, sw, ts);
+            let svgchart = document.getElementById("SvgChart");
+
+            let chartWidth = document.getElementById('chart').offsetWidth;
+            let chartHeight = document.getElementById('chart').offsetHeight;
+            svgchart.setAttribute("OriW", Svg.width);
+            svgchart.setAttribute("OriH", Svg.height);
+            let w = Svg.width, h = Svg.height;
+            let wr = Svg.width / chartWidth;
+            let hr = Svg.height / chartHeight;
+            scaler = document.getElementById('scale').value / 100
+            if (wr > hr && wr > 1) {
+                scaler = 1 / wr < scaler ? 1 / wr : scaler;
+                w = w * scaler;
+                h = h * scaler;
+            } else if (hr > 1) {
+                scaler = 1 / hr < scaler ? 1 / hr : scaler;
+                h = h * scaler;
+                w = w * scaler;
+            } else
+                scaler = 1;
+            svgchart.setAttribute("width", w);
+            svgchart.setAttribute("height", h);
+            svgchart.setAttribute("viewBox", [0, 0, Svg.width, Svg.height].join(","));
+            svgchart.innerHTML = Svg.content.join("\n");
+            document.getElementById('scale').value = Math.round(scaler * 100)
+
+            DivNodes = [];
+            var Div = Draw2(Head, DivNodes);
+            let divchart = document.getElementById('DivChart');
+            divchart.style.width = Div.width + 'px';
+            divchart.style.height = Div.height + 'px';
+            divchart.innerHTML = Div.content.join('\n');
+
+            document.getElementById('DivChart').style.transform = 'scale(' + scaler + ')'
+            suc = true;
+
+        } catch (e) {
+            if (e.error != undefined) {
+                document.getElementById("error").innerHTML = e.error;
+                let n = coder.GetAllLineText().length;
+                e.line = e.line > n ? n : e.line;
+                if (e.line != -1) {
+                    document.getElementById("line_" + e.line).className = "line_e";
+                    coder.SetLineError(e.line - 1, true);
+                    errLine = e.line - 1;
+                }
+                document.getElementById("coder").className = 'coderb_e';
+            }
+        }
+    }
+</script>
+<style>
+    .coderb {
+        background-color: #404040;
+    }
+
+    .coderb_e {
+        background-color: #454040;
+    }
+
+    .code_p {
+        margin: 0;
+        white-space: pre-wrap;
+        background-color: #202020;
+        transition-duration: 300ms;
+    }
+
+    .code_p:active {
+        background-color: #404040;
+    }
+
+    .btn {
+        width: 100px;
+        background: #303030;
+        border-style: none;
+        color: #e0e0e0;
+        font-weight: bold;
+        margin: 0 10px 0 0;
+        white-space: nowrap;
+        transition-duration: 300ms;
+    }
+
+    .btn:hover {
+        background: #404040;
+        outline: none;
+    }
+
+    .btn:active {
+        background: #383838;
+    }
+
+    .btn:focus {
+        outline: none;
+    }
+
+    .textarea {
+        background: #383838;
+        transition-duration: 300ms;
+    }
+
+    .textarea:focus {
+        background: #404040;
+        border-style: none;
+        outline: none;
+        outline-color: #ff0000;
+    }
+
+    html {
+        height: 100%;
+    }
+
+    body {
+        height: 100%;
+        margin: 0;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    .line {
+        font-size: 12px;
+        padding: 0 5px;
+        line-height: 18px;
+        background: #303030;
+        transition-duration: 300ms;
+    }
+
+    .line:hover {
+        background: #353535;
+    }
+
+    .line_e {
+        font-size: 12px;
+        padding: 0 5px;
+        line-height: 18px;
+        background: #ff0000;
+        transition-duration: 300ms;
+    }
+
+    .line_e:hover {
+        background: #ff0d0d;
+    }
+
+    .sel {
+        width: 80px;
+        background: #404040;
+        color: #e0e0e0;
+        border-style: none;
+        transition-duration: 300ms;
+        padding-left: 5px;
+        font-family: 微软雅黑;
+    }
+
+    .sel:hover {
+        background: #484848;
+    }
+
+    .sel:focus {
+        outline: none;
+    }
+
+    .edit {
+        background-color: #10bbff00;
+        transition-duration: 300ms;
+    }
+
+    .edit:hover {
+        background-color: #10bbff40;
+    }
+
+    .menu {
+        width: 130px;
+        height: 24px;
+        background: #e0e0e0;
+        color: black;
+        transition-duration: 300ms;
+        border-style: none;
+        font-family: 微软雅黑;
+    }
+
+    .menu:hover {
+        background: #808080;
+    }
+
+    .keyword {
+        color: deepskyblue;
+    }
+
+    .symble {
+        color: goldenrod;
+    }
+
+    .style {
+        color: #ff4040;
+    }
+
+    .in {
+        background: #404040;
+        resize: none;
+        width: 50px;
+        line-height: 24px;
+        padding: 0;
+        height: 24px;
+        color: white;
+        font-family: consolas;
+        margin-left: 5px;
+        border: none;
+        text-align: center;
+        transition-duration: 300ms;
+    }
+
+    .in:hover {
+        background-color: #484848;
+    }
+
+    .canChoose {
+        text-align: left;
+        padding: 5px;
+        line-height: 16px;
+        font-family: consolas;
+        font-size: 14px;
+        color: lightblue;
+        border-bottom: 1px solid #808080;
+    }
+</style>
+
+</html>

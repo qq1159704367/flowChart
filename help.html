@@ -1,0 +1,200 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta charset="utf-8">
+    <title>帮助</title>
+</head>
+
+<body style="background: #202020;padding: 10px 30px;display: flex;flex-direction: column;">
+    <div style="padding: 40px;font-size: 40px;font-family: consolas;font-weight: 500;color:#e0e0e0;flex-shrink: 0">ChartCoder 帮助文档
+    </div>
+    <hr />
+    <div class="s">代码样例</div>
+    <textarea readonly class="code" style="height: 278px">in a
+Judge: if(a &lt; b){
+   b++
+   goto Judge
+}else{
+   do{
+       c = a + b
+       divide(c)
+   }
+   divide(c)
+}
+
+function divide[
+   in n
+   n = n / 2
+   out n
+]
+    </textarea>
+    <hr />
+    <div class="s">1.如果想要一个动作命令，只需要写一行语句，如果需要多行，请使用do。</div>
+    <textarea readonly class="code" style="height: 100px">a = b//单行语句
+do{
+    a = a
+    b = b
+}//多行语句
+    </textarea>
+    <div class="s">2.标签，在语句前写入标签名称并加上冒号</div>
+    <textarea readonly class="code" style="height: 34px">Label: a = b
+    </textarea>
+    <div class="s">3.判断语句，输入if，括号内写条件，可以只有正确语句块</div>
+    <textarea readonly class="code" style="height: 190px">if/while(cond){
+    ...
+}//只有正确语句块
+
+if(cond){
+    ...
+}elseif(cond){
+    ...
+}else{
+    ...
+}//包含正确与错误语句块
+    </textarea>
+    <div class="s">4.跳转语句，goto后加标签的名称</div>
+    <textarea readonly class="code" style="height: 34px">goto Label
+    </textarea>
+    <div class="s">5.输入输出命令，输入将以平行四边形的输入框显示</div>
+    <textarea readonly class="code" style="height: 50px">in a,b
+out c
+    </textarea>
+    <div class="s">6.函数以及文件调用</div>
+    <div class="ss">你可以这样定义一个函数</div>
+    <textarea readonly class="code" style="height: 62px">function FuncName[
+    ...
+]
+    </textarea>
+    <div class="ss">调用函数</div>
+    <textarea readonly class="code" style="height: 34px">FuncName(data)
+    </textarea>
+    <div class="ss">data是你传入的参数，会写在线上</div>
+    <div class="s">7.转向操作符 turn</div>
+    <textarea readonly class="code" style="height: 34px">turn 100
+    </textarea>
+    <div class="ss">后面接的数字是两大块之间的距离</div>
+    <img style="margin: 10px;" src="turn.png" width="200px" />
+    <div class="s">8.调整符，在当前节点后加入;并且书写样式代码</div>
+    <textarea readonly class="code" style="height: 234px">if/while(cond){;...
+    n = n + 2;...
+}
+        
+if(cond){;...
+    ...
+}elseif(cond){;...
+    ...
+}else{;...
+    ...
+}
+
+in a;...
+goto K;...
+    </textarea>
+    <div class="ss">样式代码类型，多个类型使用','分隔</div>
+    <textarea readonly class="code" style="height: fit-content;" rows="11">
+nextPadding:20 //与下一节点的距离
+sidePadding:20 //侧节点的距离
+changeSide:true/false //更改是否的位置
+sideType:0/1/2 //更改条件节点的是否节点样式
+jumpSide:left/right //跳转节点的跳转的方向
+jumpPadding:20 //跳跃节点侧边距离
+condPadding:20 //条件节点的下一结点距离
+downPadding:20 //出口距离
+trueText:是,falseText:否
+backPadding:20 //while节点的末端跳跃节点出口方向，downPadding无效</textarea>
+    <div class="ss">sideType = 0</div>
+    <img style="margin: 10px;" src="tp0.png" width="100px"/>
+    <div class="ss">sideType = 1</div>
+    <img style="margin: 10px;" src="tp1.png" width="100px" />
+    <div class="ss">sideType = 2</div>
+    <img style="margin: 10px;" src="tp2.png" width="100px" />
+    <div class="s">9.代码补全</div>
+    <img src="autofill.gif" width="250px" />
+    <div class="ss">特殊字符补全</div>
+    <textarea readonly class="code" style="height: 270px">    alpha:'α'
+    beta:'β'
+    epsilon:'ε'
+    sum:'Σ'
+    prod:'∏'
+    gamma:'γ'
+    rho:'ρ'
+    tau:'τ'
+    delta:'Δ'
+    theta:'θ'
+    lambda:'λ'
+    mu:'μ'
+    pi:'π'
+    omega:'ω'
+    xi:'ξ'
+    eta:'η'
+    </textarea>
+    <div class="s">9.行移动</div>
+    <div class="ss">按住行半秒出现黄色边框后即可移动</div>
+    <img src="linechange.gif" width="250px" />
+    <div class="s">10.转义</div>
+    <div class="ss">使用反斜杠 \ 对操作符进行转义</div>
+    <textarea readonly class="code" style="height: 34px">a = \(a + b\) = c
+        </textarea>
+    <div class="s">11.编辑</div>
+    <div class="ss">在框图的显示范围点击节点可以对流程框图的一些细节进行调整，同样的调整可以在代码中使用样式代码进行实现</div>
+    <div class="ss">对于长度的调整，只需要在相应栏目滚动鼠标滚轮即可</div>
+    <hr />
+    <div class="s">12.注意事项</div>
+    <div class="ss">不支持switch语句<br>
+        不可以调用自身<br>
+        在goto语句后面不可以有其他语句<br>
+        只允许在末尾输出out<br>
+        out只允许出现在函数中<br>
+        out前不允许有标签<br>
+        在主函数中如果要跳到结尾请使用 goto end<br>
+        请勿在{}[]后紧接着书写代码，请换行书写</div>
+
+</body>
+<style>
+    .s {
+        color: #e0e0e0;
+        font-size: 14px;
+        font-family: 微软雅黑;
+        font-weight: 700;
+        padding: 10px 0;
+    }
+
+    .code {
+        background: #101010;
+        padding: 10px;
+        border-radius: 5px;
+        color: #bbbbbb;
+        white-space: pre-wrap;
+        margin: 5px 0;
+        box-sizing: border-box;
+        resize: none;
+        outline: none;
+        border-style: none;
+        width: 100%;
+        font-family: consolas;
+        overflow: hidden;
+    }
+
+    .ss {
+        color: #b0b0b0;
+        font-size: 12px;
+        font-family: 微软雅黑;
+        line-height: 20px;
+        padding-left: 20px;
+        letter-spacing: 1px;
+    }
+
+    hr {
+        flex-shrink: 0;
+        width: 100%;
+        border: none;
+        background-color: dimgray;
+        height: 1px;
+    }
+</style>
+
+</html>
